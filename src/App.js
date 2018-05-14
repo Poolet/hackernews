@@ -1,6 +1,18 @@
 import React, { Component } from 'react';
 import './App.css';
 
+const largeColumn = {
+  width: '40%',
+};
+
+const midColumn = {
+  width: '30%',
+};
+
+const smallColumn = {
+  width: '10%',
+};
+
 const list = [
   {
     title: 'React',
@@ -20,66 +32,56 @@ const list = [
   },
 ]
 
-const searchedList = searchTerm => item => {
-  return item.title.toLowerCase().includes(searchTerm.toLowerCase());
-}
+const searchedList = searchTerm => item =>
+  item.title.toLowerCase().includes(searchTerm.toLowerCase());
 
-class Table extends Component {
-  render() {
-    const { list, pattern, onDismiss } = this.props
-    return (
-      list.filter(searchedList(pattern)).map(item => {
-        return (
-          <div key={item.objectID}>
-            <span>
-              <a href={item.url}>{item.title}</a>
-            </span>
-            <span>{item.author}</span>
-            <span>{item.num_comments}</span>
-            <span>{item.points}</span>
-            <span>
-              <Button
-                onClick={() => onDismiss(item.objectID)}
-              >
-                Dismiss
-            </Button>
-            </span>
-          </div>
-        );
-      })
-    )
-  }
-}
 
-class Button extends Component {
-  render() {
-    const { onClick, className = '', children } = this.props
-    return (
-      <button
-        onClick={onClick}
-        className={className}
-        type="button"
-      >
-        {children}
-      </button>
-    );
-  }
-}
+const Table = ({ list, pattern, onDismiss }) =>
+  <div className="table">
+    {list.filter(searchedList(pattern)).map(item =>
+      <div key={item.objectID} className='table-row'>
+        <span style={{ width: largeColumn }}>
+          <a href={item.url}>{item.title}</a>
+        </span>
+        <span style={{ width: midColumn }}>
+          {item.author}
+        </span>
+        <span style={{ width: smallColumn }}>
+          {item.num_comments}
+        </span>
+        <span style={{ width: smallColumn }}>
+          {item.points}
+        </span>
+        <span style={{ width: smallColumn }}>
+          <Button
+            onClick={() => onDismiss(item.objectID)}
+            className='button-inline'
+          >
+            Dismiss
+      </Button>
+        </span>
+      </div>
+    )}
+  </div>
 
-class Search extends Component {
-  render() {
-    const { value, onChange, children } = this.props;
-    return (
-      <form>
-        {children}<input
-          type="text"
-          value={value}
-          onChange={onChange}
-        />
-      </form>
-    );
-  }
-}
+
+const Button = ({ onClick, className = '', children }) =>
+  <button
+    onClick={onClick}
+    className={className}
+    type="button"
+  >
+    {children}
+  </button>
+
+const Search = ({ value, onChange, children }) =>
+  <form>
+    {children}<input
+      type="text"
+      value={value}
+      onChange={onChange}
+    />
+  </form>
 
 class App extends Component {
   constructor(props) {
@@ -106,10 +108,12 @@ class App extends Component {
   render() {
     const { searchTerm, list } = this.state
     return (
-      <div className="App">
-        <Search value={searchTerm} onChange={this.onSearchChange} >
-          Search
+      <div className="page">
+        <div className="interactions">
+          <Search value={searchTerm} onChange={this.onSearchChange} >
+            Search
           </Search>
+        </div>
         <Table list={list} pattern={searchTerm} onDismiss={this.onDismiss} />
       </div>
     );
