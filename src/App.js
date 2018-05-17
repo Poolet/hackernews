@@ -1,89 +1,18 @@
 import React, { Component } from 'react';
 import axios from 'axios'
-import BulletList from 'react-content-loader'
 import './App.css';
-
-const DEFAULT_QUERY = 'redux';
-const DEFAULT_HPP = '5';
-
-const PATH_BASE = 'https://hn.algolia.com/api/v1';
-const PATH_SEARCH = '/search';
-const PARAM_SEARCH = 'query=';
-const PARAM_PAGE = 'page=';
-const PARAM_HPP = 'hitsPerPage='
-
-const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${DEFAULT_QUERY}&${PARAM_PAGE}&${PARAM_HPP}${DEFAULT_HPP}`;
-console.log(url);
-const largeColumn = {
-  width: '40%',
-};
-
-const midColumn = {
-  width: '30%',
-};
-
-const smallColumn = {
-  width: '10%',
-};
-
-const Loader = () => (
-  <BulletList>
-    <rect x="0" y="17" rx="4" ry="4" width="300" height="10" />
-    <rect x="0" y="40" rx="3" ry="3" width="300" height="10" />
-    <rect x="0" y="63" rx="2" ry="2" width="300" height="10" />
-    <rect x="0" y="86" rx="1" ry="1" width="300" height="10" />
-  </BulletList>
-)
-
-const Table = ({ list, onDismiss }) =>
-  <div className="table">
-    {list.map(item =>
-      <div key={item.objectID} className='table-row'>
-        <span style={{ width: largeColumn }}>
-          <a href={item.url}>{item.title}</a>
-        </span>
-        <span style={{ width: midColumn }}>
-          {item.author}
-        </span>
-        <span style={{ width: smallColumn }}>
-          {item.num_comments}
-        </span>
-        <span style={{ width: smallColumn }}>
-          {item.points}
-        </span>
-        <span style={{ width: smallColumn }}>
-          <Button
-            onClick={() => onDismiss(item.objectID)}
-            className='button-inline'
-          >
-            Dismiss
-      </Button>
-        </span>
-      </div>
-    )}
-  </div>
-
-
-const Button = ({ onClick, className = '', children }) =>
-  <button
-    onClick={onClick}
-    className={className}
-    type="button"
-  >
-    {children}
-  </button>
-
-const Search = ({ value, onChange, onSubmit, children }) =>
-  <form onSubmit={onSubmit}>
-    {children}<input
-      type="text"
-      value={value}
-      onChange={onChange}
-    />
-    <button type='submit'>
-      {children}
-    </button>
-  </form>
+import {Button, SearchButton} from './Buttons'
+import Table from './Table'
+import Loader from './Loader'
+import {
+   DEFAULT_QUERY,
+   DEFAULT_HPP,
+   PATH_BASE,
+   PATH_SEARCH,
+   PARAM_SEARCH,
+   PARAM_PAGE,
+   PARAM_HPP
+} from './constants'
 
 class App extends Component {
   _isMounted = false;
@@ -196,9 +125,9 @@ class App extends Component {
     return (
       <div className="page">
         <div className="interactions">
-          <Search value={searchTerm} onChange={this.onSearchChange} onSubmit={this.onSearchSubmit}>
+          <SearchButton value={searchTerm} onChange={this.onSearchChange} onSubmit={this.onSearchSubmit}>
             Search
-          </Search>
+          </SearchButton>
         </div>
         {error ? errorMessage : displayedStories}
         <div className="interactions">
