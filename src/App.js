@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios'
 import BulletList from 'react-content-loader'
 import './App.css';
 
@@ -85,6 +86,8 @@ const Search = ({ value, onChange, onSubmit, children }) =>
   </form>
 
 class App extends Component {
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -92,6 +95,7 @@ class App extends Component {
       searchKey: '',
       searchTerm: DEFAULT_QUERY,
       isLoading: false,
+      error: null,
     };
     this.setSearchTopStories = this.setSearchTopStories.bind(this);
     this.onDismiss = this.onDismiss.bind(this);
@@ -101,46 +105,46 @@ class App extends Component {
     this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this);
   }
 
-  needsToSearchTopStories(searchTerm){
+  needsToSearchTopStories(searchTerm) {
     return !this.state.results[searchTerm];
   }
 
   fetchSearchTopStories(searchTerm, page = 0) {
-    fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
-      .then(response => response.json())
-      .then(result => this.setSearchTopStories(result))
-      .then(this.setState({ isLoading: false }))
-      .catch(error => error);
+    axios(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
+      .then(result => this._isMounted && this.setSearchTopStories(result.data))
+      .then(this._isMounted && this.setState({ isLoading: false }))
+      .catch(error => this._isMounted && this.setState({ error }));
   }
 
   onSearchSubmit(event) {
     const { searchTerm } = this.state;
-    this.setState({searchKey: searchTerm});
-    if(this.needsToSearchTopStories(searchTerm)){
+    this.setState({ searchKey: searchTerm });
+    if (this.needsToSearchTopStories(searchTerm)) {
       this.fetchSearchTopStories(searchTerm);
     }
     event.preventDefault();
   }
 
   setSearchTopStories(result) {
-    const {hits, page} = result;
-    const {searchKey, results} = this.state;
+    const { hits, page } = result;
+    const { searchKey, results } = this.state;
 
     const oldHits = (results && results[searchKey]) ? results[searchKey].hits : [];
     const updatedHits = [
       ...oldHits,
       ...hits
     ]
-    this.setState({ 
+    this.setState({
       results: {
         ...results,
-        [searchKey]: {hits: updatedHits, page}
+        [searchKey]: { hits: updatedHits, page }
       }
     });
     console.log(result);
   }
 
   componentDidMount() {
+    this._isMounted = true;
     const { searchTerm } = this.state;
 
     this.setState({
@@ -150,16 +154,20 @@ class App extends Component {
     this.fetchSearchTopStories(searchTerm);
   }
 
+  componentWillUnmount(){
+    this._isMounted = false;
+  }
+
   onDismiss(id) {
-    const {searchKey, results} = this.state;
-    const {hits, page} = results[searchKey];
+    const { searchKey, results } = this.state;
+    const { hits, page } = results[searchKey];
 
     const isNotId = item => item.objectID !== id;
     const updatedHits = hits.filter(isNotId);
     this.setState({
-      results: { 
-        ...results, 
-        [searchKey]: {hits: updatedHits, page} 
+      results: {
+        ...results,
+        [searchKey]: { hits: updatedHits, page }
       }
     });
   }
@@ -169,14 +177,21 @@ class App extends Component {
   }
 
   render() {
-    const { searchTerm, results, isLoading, searchKey } = this.state;
+    const { searchTerm, results, isLoading, searchKey, error } = this.state;
     const page = (results && results[searchKey] && results[searchKey].page) || 0;
     const list = (results && results[searchKey] && results[searchKey].hits) || [];
+
     const displayedStories =
-      <Table
-        list={list}
-        onDismiss={this.onDismiss}
-      />
+      isLoading ? <Loader /> :
+        <Table
+          list={list}
+          onDismiss={this.onDismiss}
+        />
+
+    const errorMessage =
+      <div>
+        Something went wrong.
+      </div>
 
     return (
       <div className="page">
@@ -185,9 +200,9 @@ class App extends Component {
             Search
           </Search>
         </div>
-        {isLoading ? <Loader /> : displayedStories}
+        {error ? errorMessage : displayedStories}
         <div className="interactions">
-          <Button onClick={ () => this.fetchSearchTopStories(searchKey, page+1)}>
+          <Button onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}>
             More Items
           </Button>
         </div>
