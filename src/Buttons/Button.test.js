@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import renderer from 'react-test-renderer'
 import Button from './Button';
+import Enzyme, { shallow } from 'enzyme';
 
 describe('Button', () => {
   it('renders without crashing', () => {
@@ -16,5 +17,10 @@ describe('Button', () => {
     );
     const tree = component.toJSON();
     expect(tree).toMatchSnapshot();
+  })
+
+  it('has one child', () => {
+    const element = shallow(<Button>Test</Button>)
+    expect(element.children()).toHaveLength(1);
   })
 });

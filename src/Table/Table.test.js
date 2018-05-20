@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import renderer from 'react-test-renderer'
 import Table from './Table';
+import Enzyme, { shallow } from 'enzyme';
 
 describe('Table', () => {
     const props = {
@@ -13,15 +14,21 @@ describe('Table', () => {
 
     it('renders without crashing', () => {
         const div = document.createElement('div');
-        ReactDOM.render(<Table { ...props } />, div);
+        ReactDOM.render(<Table {...props} />, div);
     });
 
-    test('has a valid snapshot', () => {
+    it('has a valid snapshot', () => {
         const component = renderer.create(
-            <Table { ...props } />
+            <Table {...props} />
         );
         let tree = component.toJSON();
         expect(tree).toMatchSnapshot();
     });
 
+    it('shows two items in list', () => {
+        const element = shallow(
+            <Table {...props} />
+        );
+        expect(element.find('.table-row').length).toBe(2);
+    });
 });
