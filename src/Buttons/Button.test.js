@@ -17,10 +17,19 @@ describe('Button', () => {
     );
     const tree = component.toJSON();
     expect(tree).toMatchSnapshot();
-  })
+  });
 
   it('has one child', () => {
     const element = shallow(<Button>Test</Button>)
     expect(element.children()).toHaveLength(1);
-  })
+  });
+/*
+  if ('calls the passed on click handler when clicked', () => {
+    const fakeMethod = jest.fn();
+    const element = mount(<Button onClick={fakeMethod}>Test</Button>);
+    expect(fakeMethod).toHaveBeenCalledTimes(1000);
+    element.simulate('click');
+    expect(fakeMethod).toHaveBeenCalledTimes(1);
+  });
+  */
 });
