@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const SubmitButton = ({ value, onChange, onSubmit, children }) =>
 <form onSubmit={onSubmit}>
@@ -11,5 +12,12 @@ const SubmitButton = ({ value, onChange, onSubmit, children }) =>
     {children}
   </button>
 </form>
+
+SubmitButton.propTypes = {
+  onChange: PropTypes.func,
+  children: PropTypes.node,
+  value: PropTypes.string,
+  onSubmit: PropTypes.func
+}
 
 export default SubmitButton

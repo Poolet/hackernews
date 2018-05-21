@@ -5,31 +5,30 @@ import Button from './Button';
 import Enzyme, { shallow } from 'enzyme';
 
 describe('Button', () => {
+  const mockOnClick = jest.fn();
   it('renders without crashing', () => {
     const div = document.createElement('div');
-    ReactDOM.render(<Button>Test</Button>, div);
+    ReactDOM.render(<Button onClick={mockOnClick}>Test</Button>, div);
     ReactDOM.unmountComponentAtNode(div);
   });
 
   it('has a valid snapshot', () => {
     const component = renderer.create(
-      <Button>Test</Button>
+      <Button onClick={mockOnClick}>Test</Button>
     );
     const tree = component.toJSON();
     expect(tree).toMatchSnapshot();
   });
 
   it('has one child', () => {
-    const element = shallow(<Button>Test</Button>)
+    const element = shallow(<Button onClick={mockOnClick}>Test</Button>)
     expect(element.children()).toHaveLength(1);
   });
 
-  it ('calls the passed on click handler once when clicked', () => {
-    const fakeMethod = jest.fn();
-    const element = shallow(<Button onClick={fakeMethod}>Test</Button>);
-    expect(fakeMethod).toHaveBeenCalledTimes(0)
+  it('calls the passed on click handler once when clicked', () => {
+    const element = shallow(<Button onClick={mockOnClick}>Test</Button>);
+    expect(mockOnClick).toHaveBeenCalledTimes(0)
     element.simulate('click');
-    expect(fakeMethod).toHaveBeenCalledTimes(1);
+    expect(mockOnClick).toHaveBeenCalledTimes(1);
   });
-  
 });

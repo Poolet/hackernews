@@ -2,7 +2,7 @@
 
 exports[`SearchButton has a valid snapshot 1`] = `
 <form
-  onSubmit={undefined}
+  onSubmit={[Function]}
 >
   Search
   <input

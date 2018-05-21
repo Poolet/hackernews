@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import axios from 'axios'
+import axios from 'axios';
 import './App.css';
-import {Button, SearchButton} from './Buttons'
-import Table from './Table'
-import Loader from './Loader'
+import {Button, SearchButton} from './Buttons';
+import Table from './Table';
+import Loader from './Loader';
 import {
    DEFAULT_QUERY,
    DEFAULT_HPP,
@@ -12,7 +12,8 @@ import {
    PARAM_SEARCH,
    PARAM_PAGE,
    PARAM_HPP
-} from './constants'
+} from './constants';
+import PropTypes from 'prop-types';
 
 class App extends Component {
   _isMounted = false;

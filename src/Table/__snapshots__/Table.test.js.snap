@@ -53,7 +53,7 @@ exports[`Table has a valid snapshot 1`] = `
         }
       }
     >
-      2
+      1
     </span>
     <span
       style={
