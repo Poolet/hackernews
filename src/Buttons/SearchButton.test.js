@@ -37,7 +37,12 @@ describe('SearchButton', () => {
     expect(component.find('input').length).toEqual(1);
   });
 
-  it('calls the onChange method when changed', () => {
+  it('has one input', () => {
+    const component = shallow(<SearchButton onSubmit={mockSubmit}>Search</SearchButton>);
+    expect(component.find('input').length).toEqual(1);
+  });
+
+  it('calls the onChange method when input is changed', () => {
     const component = mount(<SearchButton onChange={mockChange}>Search</SearchButton>);
     component.find('input').simulate('change');
     expect(mockChange).toHaveBeenCalledTimes(1);
