@@ -23,13 +23,13 @@ describe('Button', () => {
     const element = shallow(<Button>Test</Button>)
     expect(element.children()).toHaveLength(1);
   });
-/*
-  if ('calls the passed on click handler when clicked', () => {
+
+  it ('calls the passed on click handler once when clicked', () => {
     const fakeMethod = jest.fn();
-    const element = mount(<Button onClick={fakeMethod}>Test</Button>);
-    expect(fakeMethod).toHaveBeenCalledTimes(1000);
+    const element = shallow(<Button onClick={fakeMethod}>Test</Button>);
+    expect(fakeMethod).toHaveBeenCalledTimes(0)
     element.simulate('click');
     expect(fakeMethod).toHaveBeenCalledTimes(1);
   });
-  */
+  
 });
