@@ -1,3 +1,4 @@
 import Loader from './Loader';
+import { loaderService } from './LoaderService';
 
-export default Loader;
+export { Loader, loaderService };

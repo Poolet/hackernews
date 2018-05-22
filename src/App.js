@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import './App.css';
-import {Button, SearchButton} from './Buttons';
+import { Button, SearchButton } from './Buttons';
 import Table from './Table';
-import Loader from './Loader';
+import { Loader, loaderService } from './Loader';
 import {
-   DEFAULT_QUERY,
-   DEFAULT_HPP,
-   PATH_BASE,
-   PATH_SEARCH,
-   PARAM_SEARCH,
-   PARAM_PAGE,
-   PARAM_HPP
+  DEFAULT_QUERY,
+  DEFAULT_HPP,
+  PATH_BASE,
+  PATH_SEARCH,
+  PARAM_SEARCH,
+  PARAM_PAGE,
+  PARAM_HPP
 } from './constants';
 import PropTypes from 'prop-types';
 
@@ -24,7 +24,6 @@ class App extends Component {
       results: null,
       searchKey: '',
       searchTerm: DEFAULT_QUERY,
-      isLoading: false,
       error: null,
     };
     this.setSearchTopStories = this.setSearchTopStories.bind(this);
@@ -40,9 +39,9 @@ class App extends Component {
   }
 
   fetchSearchTopStories(searchTerm, page = 0) {
+    loaderService.show('fetchStoriesLoader');
     axios(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
       .then(result => this._isMounted && this.setSearchTopStories(result.data))
-      .then(this._isMounted && this.setState({ isLoading: false }))
       .catch(error => this._isMounted && this.setState({ error }));
   }
 
@@ -64,13 +63,13 @@ class App extends Component {
       ...oldHits,
       ...hits
     ]
+    loaderService.hide('fetchStoriesLoader');
     this.setState({
       results: {
         ...results,
         [searchKey]: { hits: updatedHits, page }
       }
     });
-    console.log(result);
   }
 
   componentDidMount() {
@@ -78,13 +77,12 @@ class App extends Component {
     const { searchTerm } = this.state;
 
     this.setState({
-      isLoading: true,
       searchKey: searchTerm
     });
     this.fetchSearchTopStories(searchTerm);
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     this._isMounted = false;
   }
 
@@ -107,16 +105,15 @@ class App extends Component {
   }
 
   render() {
-    const { searchTerm, results, isLoading, searchKey, error } = this.state;
+    const { searchTerm, results, searchKey, error } = this.state;
     const page = (results && results[searchKey] && results[searchKey].page) || 0;
     const list = (results && results[searchKey] && results[searchKey].hits) || [];
 
     const displayedStories =
-      isLoading ? <Loader /> :
-        <Table
-          list={list}
-          onDismiss={this.onDismiss}
-        />
+      <Table
+        list={list}
+        onDismiss={this.onDismiss}
+      />
 
     const errorMessage =
       <div>
@@ -132,9 +129,15 @@ class App extends Component {
         </div>
         {error ? errorMessage : displayedStories}
         <div className="interactions">
-          <Button onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}>
-            More Items
-          </Button>
+          <Loader name='fetchStoriesLoader'>
+            <div>Loading...</div>
+          </Loader>
+          {
+            loaderService.isShowing('fetchStoriesLoader') ||
+            < Button onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}>
+              More stories
+            </Button>
+          }
         </div>
       </div>
     );

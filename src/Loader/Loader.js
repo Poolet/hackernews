@@ -1,18 +1,66 @@
 import React from 'react';
-import BulletList from 'react-content-loader';
 import PropTypes from 'prop-types';
+import { loaderService } from './LoaderService';
 
-const Loader = () => (
-    <BulletList>
-        <rect x="0" y="17" rx="4" ry="4" width="300" height="10" />
-        <rect x="0" y="40" rx="3" ry="3" width="300" height="10" />
-        <rect x="0" y="63" rx="2" ry="2" width="300" height="10" />
-        <rect x="0" y="86" rx="1" ry="1" width="300" height="10" />
-    </BulletList>
-);
+class Loader extends React.Component {
+    
+    get name() {
+        return this.props.name;
+    }
+
+    get group() {
+        return this.props.group;
+    }
+
+    get show() {
+        return this.state.show;
+    }
+
+    set show(show) {
+        this.setState({ show });
+    }
+    
+    constructor(props, context) {
+        super(props, context);
+
+        this.state = {
+            show: this.props.hasOwnProperty('show') ? this.props.show : false
+        };
+
+        if (this.props.hasOwnProperty('loaderService')) {
+            this.loaderService = this.props.loaderService;
+        } else {
+            this.loaderService = loaderService;
+        }
+
+        this.loaderService._register(this);
+    }
+
+    componentWillUnmount() {
+        this.loaderService._unregister(this);
+    }
+
+    component
+
+    render() {
+        let divStyle = { display: 'inline-block' };
+        if (this.state.show) {
+            const { loadingImage } = this.props;
+            return (
+                <div style={divStyle}>
+                    {loadingImage && <img src={loadingImage}  alt=''/>}
+                    {this.props.children}
+                </div>
+            );
+        }
+        return (<div style={divStyle}></div>);
+    }
+}
 
 Loader.propTypes = {
-    children: PropTypes.node.isRequired,
+    children: PropTypes.node,
+    name: PropTypes.string.isRequired,
+    loadingImage: PropTypes.string
 }
 
 export default Loader
