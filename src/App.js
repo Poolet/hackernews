@@ -39,6 +39,7 @@ class App extends Component {
   }
 
   fetchSearchTopStories(searchTerm, page = 0) {
+    //Need to do it before setState is called, since it is not triggered using set state. Otherwise, result is that loader bar is rendered based on last state, instead of this state.
     loaderService.show('fetchStoriesLoader');
     axios(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
       .then(result => this._isMounted && this.setSearchTopStories(result.data))
