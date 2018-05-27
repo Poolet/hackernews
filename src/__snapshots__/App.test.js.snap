@@ -29,12 +29,23 @@ exports[`App has a valid snapshot 1`] = `
   <div
     className="interactions"
   >
+    <div
+      style={
+        Object {
+          "display": "inline-block",
+        }
+      }
+    >
+      <div>
+        Loading...
+      </div>
+    </div>
     <button
       className=""
       onClick={[Function]}
       type="button"
     >
-      More Items
+      More stories
     </button>
   </div>
 </div>

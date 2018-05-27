@@ -40,8 +40,6 @@ class Loader extends React.Component {
         this.loaderService._unregister(this);
     }
 
-    component
-
     render() {
         let divStyle = { display: 'inline-block' };
         if (this.state.show) {

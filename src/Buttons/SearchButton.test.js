@@ -10,7 +10,6 @@ describe('SearchButton', () => {
   it('renders without crashing', () => {
     const div = document.createElement('div');
     ReactDOM.render(<SearchButton onSubmit={mockSubmit}>Search</SearchButton>, div);
-    ReactDOM.unmountComponentAtNode(div);
   });
 
   it('has a valid snapshot', () => {

@@ -9,7 +9,6 @@ describe('Button', () => {
   it('renders without crashing', () => {
     const div = document.createElement('div');
     ReactDOM.render(<Button onClick={mockOnClick}>Test</Button>, div);
-    ReactDOM.unmountComponentAtNode(div);
   });
 
   it('has a valid snapshot', () => {
