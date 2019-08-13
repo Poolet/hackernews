@@ -1,5 +1,6 @@
 import React from 'react';
-import {Button} from '../Buttons';
+import { Button } from '../Buttons';
+import { Sort } from '../Sort';
 import PropTypes from 'prop-types';
 
 const largeColumn = {
@@ -14,9 +15,54 @@ const smallColumn = {
     width: '10%',
 };
 
-const Table = ({ list, onDismiss }) =>
+const SORTS = {
+    NONE: list => list,
+    TITLE: list => sortBy(list, 'title'),
+    AUTHOR: list => sortBy(list, 'author'),
+    COMMENTS: list => sortBy(list, 'num_comments').reverse(),
+    POINTS: list => sortBy(list, 'points').reverse(),
+};
+
+const Table = ({ list, onDismiss, onSort }) =>
     <div className="table">
         {list.map(item =>
+            <div className="table-header">
+                <span style={{ width: '40%' }}>
+                    <Sort
+                        sortKey={'TITLE'}
+                        onSort={onSort}
+                    >
+                        Title
+          </Sort>
+                </span>
+                <span style={{ width: '30%' }}>
+                    <Sort
+                        sortKey={'AUTHOR'}
+                        onSort={onSort}
+                    >
+                        Author
+          </Sort>
+                </span>
+                <span style={{ width: '10%' }}>
+                    <Sort
+                        sortKey={'COMMENTS'}
+                        onSort={onSort}
+                    >
+                        Comments
+          </Sort>
+                </span>
+                <span style={{ width: '10%' }}>
+                    <Sort
+                        sortKey={'POINTS'}
+                        onSort={onSort}
+                    >
+                        Points
+          </Sort>
+                </span>
+                <span style={{ width: '10%' }}>
+                    Archive
+        </span>
+            </div>
             <div key={item.objectID} className='table-row'>
                 <span style={{ width: largeColumn }}>
                     <a href={item.url}>{item.title}</a>

@@ -3,6 +3,7 @@ import axios from 'axios';
 import './App.css';
 import { Button, SearchButton } from './Buttons';
 import Table from './Table';
+import { sortBy } from 'lodash';
 import { Loader, loaderService } from './Loader';
 import {
   DEFAULT_QUERY,
@@ -25,6 +26,7 @@ class App extends Component {
       searchKey: '',
       searchTerm: DEFAULT_QUERY,
       error: null,
+      sortKey: 'NONE',
     };
     this.setSearchTopStories = this.setSearchTopStories.bind(this);
     this.onDismiss = this.onDismiss.bind(this);
@@ -32,6 +34,7 @@ class App extends Component {
     this.onSearchSubmit = this.onSearchSubmit.bind(this);
     this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this);
     this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this);
+    this.onSort = this.onSort.bind(this);
   }
 
   needsToSearchTopStories(searchTerm) {
@@ -44,6 +47,10 @@ class App extends Component {
     axios(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
       .then(result => this._isMounted && this.setSearchTopStories(result.data))
       .catch(error => this._isMounted && this.setState({ error }));
+  }
+
+  onSort(sortKey) {
+    this.setState({ sortKey });
   }
 
   onSearchSubmit(event) {
